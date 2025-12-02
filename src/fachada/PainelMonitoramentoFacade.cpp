@@ -7,13 +7,19 @@ void PainelMonitoramentoFacade::cadastrarUsuario(const std::string& nome,
                                                  const std::string& email,
                                                  const std::string& endereco,
                                                  const std::string& perfil) {
-    std::cout << "[Fachada] cadastrarUsuario: " << nome
-              << " | " << email
-              << " | perfil=" << perfil << "\n";
+    Usuario novo = usuarioRepository_.criar(nome, email, endereco, perfil);
+
+    std::cout << "[Fachada] cadastrarUsuario: id=" << novo.id
+              << " | " << novo.nome
+              << " | " << novo.email
+              << " | perfil=" << novo.perfil << "\n";
 }
 
 void PainelMonitoramentoFacade::removerUsuario(int idUsuario) {
-    std::cout << "[Fachada] removerUsuario: id=" << idUsuario << "\n";
+    bool removido = usuarioRepository_.remover(idUsuario);
+
+    std::cout << "[Fachada] removerUsuario: id=" << idUsuario
+              << (removido ? " (removido)\n" : " (não encontrado)\n");
 }
 
 // -------- Hidrômetros --------
@@ -34,12 +40,12 @@ void PainelMonitoramentoFacade::removerHidrometro(int idHidrometro) {
 
 double PainelMonitoramentoFacade::lerConsumoHidrometro(int idHidrometro) {
     std::cout << "[Fachada] lerConsumoHidrometro: id=" << idHidrometro << "\n";
-    return 0.0; // stub por enquanto
+    return 0.0; 
 }
 
 double PainelMonitoramentoFacade::consultarConsumoUsuario(int idUsuario) {
     std::cout << "[Fachada] consultarConsumoUsuario: usuario=" << idUsuario << "\n";
-    return 0.0; // stub por enquanto
+    return 0.0; 
 }
 
 // -------- Alertas --------

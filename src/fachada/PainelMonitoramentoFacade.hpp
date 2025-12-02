@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "../usuarios/UsuarioRepository.hpp"
 
 class PainelMonitoramentoFacade {
 public:
@@ -24,4 +25,7 @@ public:
 
     // ---- Alertas ----
     void definirLimiteConsumoUsuario(int idUsuario, double limite);
+
+private:
+    UsuarioRepository usuarioRepository_; 
 };
