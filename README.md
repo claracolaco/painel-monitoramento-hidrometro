@@ -14,7 +14,7 @@ leituras geradas pelos Simuladores de Hidrômetro Analógico (SHA), usando uma
 
 ## 🧩 Padrões de Projeto Utilizados
 
-> Nesta versão, é uma **lista planejada**. Depois vamos ligar cada padrão a arquivos específicos do código.
+> Nesta versão, é uma **lista planejada**. Depois cada padrão será ligado a arquivos específicos do código.
 
 | Padrão          | Uso planejado no projeto                                             |
 |-----------------|----------------------------------------------------------------------|
