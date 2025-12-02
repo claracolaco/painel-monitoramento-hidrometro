@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "../usuarios/UsuarioRepository.hpp"
+#include "../hidrometros/HidrometroRepository.hpp"
 
 class PainelMonitoramentoFacade {
 public:
@@ -27,5 +28,6 @@ public:
     void definirLimiteConsumoUsuario(int idUsuario, double limite);
 
 private:
-    UsuarioRepository usuarioRepository_; 
+    UsuarioRepository usuarioRepository_;    
+    HidrometroRepository hidrometroRepository_; 
 };

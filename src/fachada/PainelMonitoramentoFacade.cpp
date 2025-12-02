@@ -27,13 +27,19 @@ void PainelMonitoramentoFacade::removerUsuario(int idUsuario) {
 void PainelMonitoramentoFacade::registrarHidrometro(int idUsuario,
                                                     const std::string& numeroSerie,
                                                     const std::string& localInstalacao) {
-    std::cout << "[Fachada] registrarHidrometro: usuario=" << idUsuario
-              << " | serie=" << numeroSerie
-              << " | local=" << localInstalacao << "\n";
+    Hidrometro h = hidrometroRepository_.registrar(idUsuario, numeroSerie, localInstalacao);
+
+    std::cout << "[Fachada] registrarHidrometro: id=" << h.id
+              << " | usuario=" << h.idUsuario
+              << " | serie=" << h.numeroSerie
+              << " | local=" << h.localInstalacao << "\n";
 }
 
 void PainelMonitoramentoFacade::removerHidrometro(int idHidrometro) {
-    std::cout << "[Fachada] removerHidrometro: id=" << idHidrometro << "\n";
+    bool removido = hidrometroRepository_.remover(idHidrometro);
+
+    std::cout << "[Fachada] removerHidrometro: id=" << idHidrometro
+              << (removido ? " (removido)\n" : " (não encontrado)\n");
 }
 
 // -------- Consumo / Leituras --------
