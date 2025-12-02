@@ -1,5 +1,17 @@
 #include "PainelMonitoramentoFacade.hpp"
 #include <iostream>
+#include "../imagens/SimpleImageReader.hpp"
+#include "../hidrometros/Hidrometro.hpp"
+#include "../consumo/LeituraConsumo.hpp"
+
+// -------- Construtor / Destrutor --------
+
+PainelMonitoramentoFacade::PainelMonitoramentoFacade()
+    : imageReader_(new SimpleImageReader()) {}
+
+PainelMonitoramentoFacade::~PainelMonitoramentoFacade() {
+    delete imageReader_;
+}
 
 // -------- Usuários --------
 
@@ -45,13 +57,40 @@ void PainelMonitoramentoFacade::removerHidrometro(int idHidrometro) {
 // -------- Consumo / Leituras --------
 
 double PainelMonitoramentoFacade::lerConsumoHidrometro(int idHidrometro) {
-    std::cout << "[Fachada] lerConsumoHidrometro: id=" << idHidrometro << "\n";
-    return 0.0; 
+    Hidrometro* h = hidrometroRepository_.buscarPorId(idHidrometro);
+    if (!h) {
+        std::cout << "[Fachada] lerConsumoHidrometro: hidrômetro não encontrado: id="
+                  << idHidrometro << "\n";
+        return 0.0;
+    }
+
+    // Caminho fictício de imagem
+    std::string caminhoImagem = "data/hidrometro_" + std::to_string(idHidrometro) + ".png";
+
+    double valor = imageReader_->lerConsumoDaImagem(caminhoImagem);
+
+    consumoRepository_.registrarLeitura(h->id, h->idUsuario, valor);
+
+    std::cout << "[Fachada] lerConsumoHidrometro: id=" << h->id
+              << " | usuario=" << h->idUsuario
+              << " | consumoLido=" << valor << "\n";
+
+    return valor;
 }
 
 double PainelMonitoramentoFacade::consultarConsumoUsuario(int idUsuario) {
-    std::cout << "[Fachada] consultarConsumoUsuario: usuario=" << idUsuario << "\n";
-    return 0.0; 
+    auto leituras = consumoRepository_.listarPorUsuario(idUsuario);
+
+    double soma = 0.0;
+    for (const auto& leitura : leituras) {
+        soma += leitura.valor;
+    }
+
+    std::cout << "[Fachada] consultarConsumoUsuario: usuario=" << idUsuario
+              << " | leituras=" << leituras.size()
+              << " | consumoTotal=" << soma << "\n";
+
+    return soma;
 }
 
 // -------- Alertas --------

@@ -2,9 +2,16 @@
 #include <string>
 #include "../usuarios/UsuarioRepository.hpp"
 #include "../hidrometros/HidrometroRepository.hpp"
+#include "../consumo/ConsumoRepository.hpp"
+
+// Forward declaration da Strategy
+class ImageReader;
 
 class PainelMonitoramentoFacade {
 public:
+    PainelMonitoramentoFacade();
+    ~PainelMonitoramentoFacade();
+
     // ---- Usuários ----
     void cadastrarUsuario(const std::string& nome,
                           const std::string& email,
@@ -28,6 +35,9 @@ public:
     void definirLimiteConsumoUsuario(int idUsuario, double limite);
 
 private:
-    UsuarioRepository usuarioRepository_;    
-    HidrometroRepository hidrometroRepository_; 
+    UsuarioRepository usuarioRepository_;
+    HidrometroRepository hidrometroRepository_;
+    ConsumoRepository consumoRepository_;
+
+    ImageReader* imageReader_; // Strategy para leitura de imagens
 };

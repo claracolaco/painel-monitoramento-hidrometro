@@ -2,7 +2,7 @@
 #include "fachada/PainelMonitoramentoFacade.hpp"
 
 int main() {
-    std::cout << "Painel de Monitoramento de Hidrômetros - inicializado.\n\n";
+    std::cout << "Painel de Monitoramento de Hidrometros - inicializado.\n\n";
 
     PainelMonitoramentoFacade painel;
 
@@ -15,8 +15,13 @@ int main() {
                                "HID-001",
                                "Apartamento 101");
 
-    double consumo = painel.lerConsumoHidrometro(1);
-    std::cout << "Consumo lido (stub): " << consumo << " m3\n";
+    double c1 = painel.lerConsumoHidrometro(1);
+    double c2 = painel.lerConsumoHidrometro(1);
+
+    std::cout << "Leituras individuais: " << c1 << " m3, " << c2 << " m3\n";
+
+    double totalUsuario = painel.consultarConsumoUsuario(1);
+    std::cout << "Consumo total do usuário 1: " << totalUsuario << " m3\n";
 
     painel.definirLimiteConsumoUsuario(1, 10.0);
 
