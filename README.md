@@ -8,7 +8,7 @@ leituras geradas pelos Simuladores de Hidrômetro Analógico (SHA), usando uma
 
 ## 📊 Progresso Geral do Projeto
 
-`████████████░░░░` **70%**
+`██████████████░░` **80%**
 
 ---
 
@@ -19,7 +19,7 @@ leituras geradas pelos Simuladores de Hidrômetro Analógico (SHA), usando uma
 | Padrão        | Onde ver no código                                                                 |
 |---------------|-------------------------------------------------------------------------------------|
 | **Facade**    | `src/fachada/PainelMonitoramentoFacade.hpp` e `src/fachada/PainelMonitoramentoFacade.cpp` |
-| **Repository** | `src/usuarios/UsuarioRepository.*` (usuários), `src/hidrometros/HidrometroRepository.*` (hidrômetros) e `src/consumo/ConsumoRepository.*` (leituras de consumo) |
+| **Repository** | `src/usuarios/UsuarioRepository.*` (usuários), `src/hidrometros/HidrometroRepository.*` (hidrômetros), `src/consumo/ConsumoRepository.*` (leituras de consumo) e `src/alertas/AlertaRepository.*` (alertas gerados) |
 | **Strategy**  | Interface `ImageReader` (`src/imagens/ImageReader.hpp`) e implementação `SimpleImageReader.*` usada para ler o consumo a partir de imagens de hidrômetros |
 
 ### Padrões planejados (a implementar)
@@ -34,6 +34,6 @@ leituras geradas pelos Simuladores de Hidrômetro Analógico (SHA), usando uma
 
 - **Facade**: a classe `PainelMonitoramentoFacade` concentra o acesso aos subsistemas internos (usuários, hidrômetros, consumo, e futuramente alertas etc.), evitando que o código cliente (`main.cpp`) acesse diretamente os repositórios.
 
-- **Repository**: os repositórios `UsuarioRepository`, `HidrometroRepository` e `ConsumoRepository` encapsulam o armazenamento em memória das entidades de domínio, oferecendo operações de criação, remoção, busca e listagem sem expor detalhes de implementação (como `std::vector`).
+- **Repository**: os repositórios `UsuarioRepository`, `HidrometroRepository`, `ConsumoRepository` e `AlertaRepository` encapsulam o armazenamento em memória das entidades de domínio, oferecendo operações de criação, remoção, busca e listagem sem expor detalhes de implementação (como `std::vector`).
 
 - **Strategy**: a interface `ImageReader` define o contrato para leitura do consumo a partir de uma imagem de hidrômetro. A implementação `SimpleImageReader` é uma estratégia concreta usada neste protótipo, que simula a leitura. No futuro, outras estratégias (por exemplo, usando OCR real) podem ser utilizadas sem alterar a Fachada.
