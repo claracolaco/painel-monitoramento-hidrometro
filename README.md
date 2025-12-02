@@ -8,20 +8,26 @@ leituras geradas pelos Simuladores de Hidrômetro Analógico (SHA), usando uma
 
 ## 📊 Progresso Geral do Projeto
 
-`████████░░░░░░░░` **40%**
+`██████████░░░░░░` **50%**
 
 ---
 
 ## 🧩 Padrões de Projeto Utilizados
 
-> Nesta versão, é uma **lista planejada**. Depois cada padrão será ligado a arquivos específicos do código.
+### Padrões já implementados
 
-| Padrão          | Uso planejado no projeto                                             |
-|-----------------|----------------------------------------------------------------------|
-| **Facade**      | Classe de fachada do painel agregando todos os subsistemas           |
-| **Repository**  | Acesso e gerenciamento de usuários, hidrômetros e leituras           |
-| **Strategy**    | Estratégias para leitura/processamento de imagens de hidrômetros     |
-| **Template Method** | Fluxo padrão de monitoramento/atualização de consumo             |
-| **Observer**    | Disparo de alertas quando limites de consumo forem excedidos         |
-| **Singleton**   | Logger centralizado para o sistema                                   |
-| **Adapter**     | Integração com biblioteca de OCR / envio de e-mails                  |
+| Padrão       | Onde ver no código                                                                 |
+|--------------|-------------------------------------------------------------------------------------|
+| **Facade**   | `src/fachada/PainelMonitoramentoFacade.hpp` e `src/fachada/PainelMonitoramentoFacade.cpp` |
+| **Repository** | `src/usuarios/UsuarioRepository.hpp` e `src/usuarios/UsuarioRepository.cpp` (armazenamento em memória de usuários) |
+
+### Padrões planejados (a implementar)
+
+| Padrão          | Uso planejado                                                                  |
+|-----------------|-------------------------------------------------------------------------------|
+| **Repository**  | Repositórios para hidrômetros, leituras e consumo                            |
+| **Strategy**    | Estratégias para leitura/processamento de imagens de hidrômetros             |
+| **Template Method** | Fluxo padrão de monitoramento/atualização periódica de consumo           |
+| **Observer**    | Disparo de alertas quando limites de consumo forem excedidos                 |
+| **Singleton**   | Logger centralizado para o sistema                                           |
+| **Adapter**     | Integração com biblioteca de OCR / serviço de envio de e-mails               |
