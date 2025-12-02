@@ -1,8 +1,10 @@
 #pragma once
 #include <string>
+#include <unordered_map>
 #include "../usuarios/UsuarioRepository.hpp"
 #include "../hidrometros/HidrometroRepository.hpp"
 #include "../consumo/ConsumoRepository.hpp"
+#include "../alertas/AlertaRepository.hpp"
 
 // Forward declaration da Strategy
 class ImageReader;
@@ -38,6 +40,9 @@ private:
     UsuarioRepository usuarioRepository_;
     HidrometroRepository hidrometroRepository_;
     ConsumoRepository consumoRepository_;
+    AlertaRepository alertaRepository_;
 
     ImageReader* imageReader_; // Strategy para leitura de imagens
+
+    std::unordered_map<int, double> limitesConsumoPorUsuario_;
 };

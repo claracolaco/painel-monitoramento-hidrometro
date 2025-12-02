@@ -15,15 +15,15 @@ int main() {
                                "HID-001",
                                "Apartamento 101");
 
+    painel.definirLimiteConsumoUsuario(1, 200.0);
+
     double c1 = painel.lerConsumoHidrometro(1);
     double c2 = painel.lerConsumoHidrometro(1);
 
     std::cout << "Leituras individuais: " << c1 << " m3, " << c2 << " m3\n";
 
     double totalUsuario = painel.consultarConsumoUsuario(1);
-    std::cout << "Consumo total do usuário 1: " << totalUsuario << " m3\n";
-
-    painel.definirLimiteConsumoUsuario(1, 10.0);
+    std::cout << "Consumo total do usuario 1: " << totalUsuario << " m3\n";
 
     return 0;
 }
