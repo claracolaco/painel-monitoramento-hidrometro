@@ -1,5 +1,7 @@
 .vscode/
 
+painel.exe
+
 *.exe
 *.o
 *.obj
