@@ -22,16 +22,16 @@ void PainelMonitoramentoFacade::cadastrarUsuario(const std::string& nome,
                                                  const std::string& perfil) {
     Usuario novo = usuarioRepository_.criar(nome, email, endereco, perfil);
 
-    std::cout << "[Fachada] cadastrarUsuario: id=" << novo.id
-              << " | " << novo.nome
-              << " | " << novo.email
+    std::cout << "  [USUARIO] Cadastrado: id=" << novo.id
+              << " | nome=" << novo.nome
+              << " | email=" << novo.email
               << " | perfil=" << novo.perfil << "\n";
 }
 
 void PainelMonitoramentoFacade::removerUsuario(int idUsuario) {
     bool removido = usuarioRepository_.remover(idUsuario);
 
-    std::cout << "[Fachada] removerUsuario: id=" << idUsuario
+    std::cout << "  [USUARIO] Remocao: id=" << idUsuario
               << (removido ? " (removido)\n" : " (nao encontrado)\n");
 }
 
@@ -42,7 +42,7 @@ void PainelMonitoramentoFacade::registrarHidrometro(int idUsuario,
                                                     const std::string& localInstalacao) {
     Hidrometro h = hidrometroRepository_.registrar(idUsuario, numeroSerie, localInstalacao);
 
-    std::cout << "[Fachada] registrarHidrometro: id=" << h.id
+    std::cout << "  [HIDROMETRO] Registrado: id=" << h.id
               << " | usuario=" << h.idUsuario
               << " | serie=" << h.numeroSerie
               << " | local=" << h.localInstalacao << "\n";
@@ -51,7 +51,7 @@ void PainelMonitoramentoFacade::registrarHidrometro(int idUsuario,
 void PainelMonitoramentoFacade::removerHidrometro(int idHidrometro) {
     bool removido = hidrometroRepository_.remover(idHidrometro);
 
-    std::cout << "[Fachada] removerHidrometro: id=" << idHidrometro
+    std::cout << "  [HIDROMETRO] Remocao: id=" << idHidrometro
               << (removido ? " (removido)\n" : " (nao encontrado)\n");
 }
 
@@ -60,31 +60,30 @@ void PainelMonitoramentoFacade::removerHidrometro(int idHidrometro) {
 double PainelMonitoramentoFacade::lerConsumoHidrometro(int idHidrometro) {
     Hidrometro* h = hidrometroRepository_.buscarPorId(idHidrometro);
     if (!h) {
-        std::cout << "[Fachada] lerConsumoHidrometro: hidrômetro nao encontrado: id="
+        std::cout << "  [LEITURA] Hidrometro nao encontrado: id="
                   << idHidrometro << "\n";
         return 0.0;
     }
 
-    // Caminho fictício de imagem 
-    std::string caminhoImagem = "data/hidrometro_" + std::to_string(idHidrometro) + ".png";
+    // Caminho fictício (ou real, se você apontar para as imagens dos SHAs)
+    std::string caminhoImagem = "data/hidrometro_" + std::to_string(idHidrometro) + ".bmp";
 
     double valor = imageReader_->lerConsumoDaImagem(caminhoImagem);
 
     consumoRepository_.registrarLeitura(h->id, h->idUsuario, valor);
 
-    // Soma o consumo total do usuário
     auto leiturasUsuario = consumoRepository_.listarPorUsuario(h->idUsuario);
     double totalUsuario = 0.0;
     for (const auto& leitura : leiturasUsuario) {
         totalUsuario += leitura.valor;
     }
 
-    std::cout << "[Fachada] lerConsumoHidrometro: id=" << h->id
-              << " | usuario=" << h->idUsuario
-              << " | consumoLido=" << valor
+    std::cout << "  [LEITURA] Hidrometro " << h->id
+              << " (usuario=" << h->idUsuario << "): "
+              << "consumoLido=" << valor
               << " | consumoTotalUsuario=" << totalUsuario << "\n";
 
-    // Verifica se há limite configurado e gera alerta se necessário
+    // Verifica limite e gera alerta, se necessário
     auto it = limitesConsumoPorUsuario_.find(h->idUsuario);
     if (it != limitesConsumoPorUsuario_.end()) {
         double limite = it->second;
@@ -99,7 +98,7 @@ double PainelMonitoramentoFacade::lerConsumoHidrometro(int idHidrometro) {
                 totalUsuario
             );
 
-            std::cout << "[ALERTA] id=" << alerta.id
+            std::cout << "    [ALERTA] id=" << alerta.id
                       << " | usuario=" << alerta.idUsuario
                       << " | limite=" << alerta.valorReferencia
                       << " | consumoAtual=" << alerta.consumoAtual
@@ -118,8 +117,8 @@ double PainelMonitoramentoFacade::consultarConsumoUsuario(int idUsuario) {
         soma += leitura.valor;
     }
 
-    std::cout << "[Fachada] consultarConsumoUsuario: usuario=" << idUsuario
-              << " | leituras=" << leituras.size()
+    std::cout << "  [CONSULTA] Consumo do usuario " << idUsuario
+              << ": leituras=" << leituras.size()
               << " | consumoTotal=" << soma << "\n";
 
     return soma;
@@ -130,6 +129,6 @@ double PainelMonitoramentoFacade::consultarConsumoUsuario(int idUsuario) {
 void PainelMonitoramentoFacade::definirLimiteConsumoUsuario(int idUsuario, double limite) {
     limitesConsumoPorUsuario_[idUsuario] = limite;
 
-    std::cout << "[Fachada] definirLimiteConsumoUsuario: usuario=" << idUsuario
-              << " | limite=" << limite << "\n";
+    std::cout << "  [ALERTA] Limite configurado para o usuario " << idUsuario
+              << ": " << limite << " m3\n";
 }
