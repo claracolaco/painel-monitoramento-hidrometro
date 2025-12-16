@@ -26,7 +26,7 @@ int main() {
     painel.definirLimiteConsumoUsuario(1, 200.0);
 
     std::cout << "\n[ETAPA 4] Leituras de consumo por hidrometro\n";
-    double c1 = painel.lerConsumoHidrometro(1); // SHA 1
+    double c1 = painel.configurarDiretorioImagensHidrometro(1, "../sha_sophia/Medições_202311250031"); // SHA 1 - sophia
     double c2 = painel.lerConsumoHidrometro(2); // SHA 2
 
     std::cout << "\n  Resumo das leituras:\n";
