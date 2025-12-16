@@ -1,5 +1,7 @@
 #include <iostream>
 #include "fachada/PainelMonitoramentoFacade.hpp"
+#include <thread>
+#include <chrono>
 
 int main() {
     std::cout << "=============================================\n";
@@ -26,12 +28,20 @@ int main() {
     painel.definirLimiteConsumoUsuario(1, 200.0);
 
     std::cout << "\n[ETAPA 4] Leituras de consumo por hidrometro\n";
-    double c1 = painel.configurarDiretorioImagensHidrometro(1, "../sha_sophia/Medições_202311250031"); // SHA 1 - sophia
-    double c2 = painel.configurarDiretorioImagensHidrometro(2, "../sha_anna/medicoes_hidrometros"); // SHA 2 - anna
+    painel.configurarDiretorioImagensHidrometro(1, "../sha_sophia/Medicoes_sophia"); // SHA 1 - sophia
+    painel.configurarDiretorioImagensHidrometro(2, "../sha_anna/medicoes_hidrometros");    // SHA 2 - anna
 
-    std::cout << "\n  Resumo das leituras:\n";
-    std::cout << "    SHA Pedro  (hidrometro 1): " << c1 << " m3\n";
-    std::cout << "    SHA Sophia (hidrometro 2): " << c2 << " m3\n";
+    std::cout << "\n[ETAPA 4B] Coleta de leituras (3 ciclos)\n";
+for (int i = 1; i <= 3; i++) {
+    std::cout << "\n--- Ciclo " << i << " ---\n";
+    double l1 = painel.lerConsumoHidrometro(1);
+    double l2 = painel.lerConsumoHidrometro(2);
+
+    std::cout << "SHA 1: " << l1 << " m3\n";
+    std::cout << "SHA 2:   " << l2 << " m3\n";
+
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+}
 
     std::cout << "\n[ETAPA 5] Consolidacao por usuario\n";
     double totalUsuario = painel.consultarConsumoUsuario(1);

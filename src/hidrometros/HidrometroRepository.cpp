@@ -44,3 +44,10 @@ std::vector<Hidrometro> HidrometroRepository::listarPorUsuario(int idUsuario) co
 std::vector<Hidrometro> HidrometroRepository::listarTodos() const {
     return hidrometros_;
 }
+
+bool HidrometroRepository::definirDiretorioImagens(int idHidrometro, const std::string& diretorio) {
+    Hidrometro* h = buscarPorId(idHidrometro);
+    if (!h) return false;
+    h->diretorioImagens = diretorio;
+    return true;
+}

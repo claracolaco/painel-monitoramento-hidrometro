@@ -4,6 +4,40 @@
 #include "../hidrometros/Hidrometro.hpp"
 #include "../consumo/LeituraConsumo.hpp"
 #include "../alertas/Alerta.hpp"
+#include <filesystem>
+#include <optional>
+
+static std::optional<std::string> encontrarImagemMaisRecente(const std::string& diretorio) {
+    namespace fs = std::filesystem;
+
+    if (diretorio.empty()) return std::nullopt;
+    if (!fs::exists(diretorio) || !fs::is_directory(diretorio)) return std::nullopt;
+
+    fs::path maisRecente;
+    fs::file_time_type tempoMaisRecente;
+    bool achou = false;
+
+    for (const auto& entry : fs::directory_iterator(diretorio)) {
+        if (!entry.is_regular_file()) continue;
+
+        fs::path p = entry.path();
+        auto ext = p.extension().string();
+
+        // aceita bmp/png/jpg/jpeg
+        if (ext != ".bmp" && ext != ".png" && ext != ".jpg" && ext != ".jpeg") continue;
+
+        auto t = fs::last_write_time(p);
+        if (!achou || t > tempoMaisRecente) {
+            achou = true;
+            tempoMaisRecente = t;
+            maisRecente = p;
+        }
+    }
+
+    if (!achou) return std::nullopt;
+    return maisRecente.string();
+}
+
 
 // -------- Construtor / Destrutor --------
 
@@ -13,6 +47,7 @@ PainelMonitoramentoFacade::PainelMonitoramentoFacade()
 PainelMonitoramentoFacade::~PainelMonitoramentoFacade() {
     delete imageReader_;
 }
+
 
 // -------- Usuários --------
 
@@ -55,6 +90,19 @@ void PainelMonitoramentoFacade::removerHidrometro(int idHidrometro) {
               << (removido ? " (removido)\n" : " (nao encontrado)\n");
 }
 
+void PainelMonitoramentoFacade::configurarDiretorioImagensHidrometro(int idHidrometro,
+                                                                     const std::string& diretorio) {
+    bool ok = hidrometroRepository_.definirDiretorioImagens(idHidrometro, diretorio);
+
+    if (ok) {
+        std::cout << "  [HIDRÔMETRO] Diretorio de imagens configurado: id=" << idHidrometro
+                  << " | dir=" << diretorio << "\n";
+    } else {
+        std::cout << "  [HIDRÔMETRO] Falha ao configurar diretorio (nao encontrado): id="
+                  << idHidrometro << "\n";
+    }
+}
+
 // -------- Consumo / Leituras --------
 
 double PainelMonitoramentoFacade::lerConsumoHidrometro(int idHidrometro) {
@@ -65,10 +113,24 @@ double PainelMonitoramentoFacade::lerConsumoHidrometro(int idHidrometro) {
         return 0.0;
     }
 
-    // Caminho fictício (ou real, se você apontar para as imagens dos SHAs)
-    std::string caminhoImagem = "data/hidrometro_" + std::to_string(idHidrometro) + ".bmp";
+    // pega o caminho da imagem mais recente do diretório do SHA
+    auto img = encontrarImagemMaisRecente(h->diretorioImagens);
 
-    double valor = imageReader_->lerConsumoDaImagem(caminhoImagem);
+    if (!img.has_value()) {
+        std::cout << "  [LEITURA] Nenhuma imagem disponivel para o hidrometro " << h->id
+                << " (dir=" << h->diretorioImagens << ")\n";
+        return 0.0;
+    }
+
+    // evita processar a mesma imagem repetidamente
+    if (*img == h->ultimoArquivoProcessado) {
+        std::cout << "  [LEITURA] Sem nova imagem para o hidrometro " << h->id << "\n";
+        return 0.0;
+    }
+
+    double valor = imageReader_->lerConsumoDaImagem(*img);
+    consumoRepository_.registrarLeitura(h->id, h->idUsuario, valor);
+    h->ultimoArquivoProcessado = *img;
 
     consumoRepository_.registrarLeitura(h->id, h->idUsuario, valor);
 

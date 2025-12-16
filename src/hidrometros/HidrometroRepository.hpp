@@ -18,6 +18,8 @@ public:
 
     std::vector<Hidrometro> listarTodos() const;
 
+    bool definirDiretorioImagens(int idHidrometro, const std::string& diretorio);
+
 private:
     std::vector<Hidrometro> hidrometros_;
     int proximoId_;

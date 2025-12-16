@@ -28,6 +28,7 @@ public:
                              const std::string& localInstalacao);
 
     void removerHidrometro(int idHidrometro);
+    void configurarDiretorioImagensHidrometro(int idHidrometro, const std::string& diretorio);
 
     // ---- Consumo / Leituras ----
     double lerConsumoHidrometro(int idHidrometro);

@@ -4,9 +4,13 @@
 class Hidrometro {
 public:
     int id;
-    int idUsuario;           // dono / responsável
+    int idUsuario;
     std::string numeroSerie;
     std::string localInstalacao;
+
+    std::string diretorioImagens;
+
+    std::string ultimoArquivoProcessado;
 
     Hidrometro() = default;
 
@@ -17,5 +21,7 @@ public:
         : id(id),
           idUsuario(idUsuario),
           numeroSerie(numeroSerie),
-          localInstalacao(localInstalacao) {}
+          localInstalacao(localInstalacao),
+          diretorioImagens(""),
+          ultimoArquivoProcessado("") {}
 };
