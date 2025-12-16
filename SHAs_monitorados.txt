@@ -1,0 +1,5 @@
+SHA 1:
+https://github.com/pedrodev3005/simulador_hidrometro_real (branch: dev_sophia.sales)
+
+SHA 2:
+https://github.com/AnnaMilagres/simulador-hidrometro (branch: dev_anna.nogueira)
