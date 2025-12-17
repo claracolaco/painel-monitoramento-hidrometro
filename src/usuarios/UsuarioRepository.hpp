@@ -15,6 +15,15 @@ public:
 
     Usuario* buscarPorId(int idUsuario);
 
+    Usuario* buscarPorEmail(const std::string& email);
+
+    bool atualizar(int idUsuario,
+               const std::string& nome,
+               const std::string& email,
+               const std::string& endereco,
+               const std::string& perfil);
+
+
     std::vector<Usuario> listarTodos() const;
 
 private:

@@ -70,6 +70,81 @@ void PainelMonitoramentoFacade::removerUsuario(int idUsuario) {
               << (removido ? " (removido)\n" : " (nao encontrado)\n");
 }
 
+void PainelMonitoramentoFacade::consultarUsuario(int idUsuario) {
+    Usuario* u = usuarioRepository_.buscarPorId(idUsuario);
+    if (!u) {
+        std::cout << "  [USUARIO] Consulta: id=" << idUsuario << " (nao encontrado)\n";
+        return;
+    }
+
+    std::cout << "  [USUARIO] Consulta: id=" << u->id
+              << " | nome=" << u->nome
+              << " | email=" << u->email
+              << " | endereco=" << u->endereco
+              << " | perfil=" << u->perfil << "\n";
+
+    auto hs = hidrometroRepository_.listarPorUsuario(idUsuario);
+    std::cout << "    [USUARIO] Hidrometros (" << hs.size() << "):\n";
+    for (const auto& h : hs) {
+        std::cout << "      - id=" << h.id
+                  << " | serie=" << h.numeroSerie
+                  << " | local=" << h.localInstalacao
+                  << " | dir=" << (h.diretorioImagens.empty() ? "<nao definido>" : h.diretorioImagens)
+                  << "\n";
+    }
+
+    auto leituras = consumoRepository_.listarPorUsuario(idUsuario);
+    double total = 0.0;
+    for (const auto& l : leituras) total += l.valor;
+
+    std::cout << "    [USUARIO] Leituras (" << leituras.size()
+              << ") | consumoTotal=" << total << " m3\n";
+
+    auto alertas = alertaRepository_.listarPorUsuario(idUsuario);
+    std::cout << "    [USUARIO] Alertas (" << alertas.size() << "):\n";
+    for (const auto& a : alertas) {
+        std::cout << "      - id=" << a.id
+                  << " | limite=" << a.valorReferencia
+                  << " | consumoAtual=" << a.consumoAtual
+                  << " | msg=" << a.mensagem << "\n";
+    }
+}
+
+void PainelMonitoramentoFacade::atualizarUsuario(int idUsuario,
+                                                 const std::string& nome,
+                                                 const std::string& email,
+                                                 const std::string& endereco,
+                                                 const std::string& perfil) {
+    bool ok = usuarioRepository_.atualizar(idUsuario, nome, email, endereco, perfil);
+
+    std::cout << "  [USUARIO] Atualizacao: id=" << idUsuario
+              << (ok ? " (ok)\n" : " (nao encontrado)\n");
+}
+
+void PainelMonitoramentoFacade::listarHidrometrosUsuario(int idUsuario) {
+    auto hs = hidrometroRepository_.listarPorUsuario(idUsuario);
+    std::cout << "  [HIDROMETRO] Lista do usuario " << idUsuario
+              << " (" << hs.size() << "):\n";
+    for (const auto& h : hs) {
+        std::cout << "    - id=" << h.id
+                  << " | serie=" << h.numeroSerie
+                  << " | local=" << h.localInstalacao << "\n";
+    }
+}
+
+double PainelMonitoramentoFacade::consultarConsumoHidrometro(int idHidrometro) {
+    auto leituras = consumoRepository_.listarPorHidrometro(idHidrometro);
+
+    double soma = 0.0;
+    for (const auto& l : leituras) soma += l.valor;
+
+    std::cout << "  [CONSULTA] Consumo do hidrometro " << idHidrometro
+              << ": leituras=" << leituras.size()
+              << " | consumoTotal=" << soma << " m3\n";
+    return soma;
+}
+
+
 // -------- Hidrômetros --------
 
 void PainelMonitoramentoFacade::registrarHidrometro(int idUsuario,

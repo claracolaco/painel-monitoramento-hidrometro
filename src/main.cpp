@@ -49,4 +49,10 @@ for (int i = 1; i <= 3; i++) {
 
     std::cout << "\n=== Fim da demonstracao do painel ===\n";
     return 0;
+
+    std::cout << "\n[ETAPA 6] Consultas\n";
+    painel.consultarUsuario(1);
+    painel.consultarConsumoHidrometro(1);
+    painel.consultarConsumoHidrometro(2);
+
 }

@@ -37,6 +37,20 @@ public:
     // ---- Alertas ----
     void definirLimiteConsumoUsuario(int idUsuario, double limite);
 
+    void consultarUsuario(int idUsuario);
+
+
+    
+    void atualizarUsuario(int idUsuario,
+                        const std::string& nome,
+                        const std::string& email,
+                        const std::string& endereco,
+                        const std::string& perfil);
+
+    void listarHidrometrosUsuario(int idUsuario);
+
+    double consultarConsumoHidrometro(int idHidrometro);
+
 private:
     UsuarioRepository usuarioRepository_;
     HidrometroRepository hidrometroRepository_;

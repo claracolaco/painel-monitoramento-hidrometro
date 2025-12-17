@@ -35,3 +35,25 @@ Usuario* UsuarioRepository::buscarPorId(int idUsuario) {
 std::vector<Usuario> UsuarioRepository::listarTodos() const {
     return usuarios_;
 }
+
+Usuario* UsuarioRepository::buscarPorEmail(const std::string& email) {
+    for (auto& u : usuarios_) {
+        if (u.email == email) return &u;
+    }
+    return nullptr;
+}
+
+bool UsuarioRepository::atualizar(int idUsuario,
+                                  const std::string& nome,
+                                  const std::string& email,
+                                  const std::string& endereco,
+                                  const std::string& perfil) {
+    Usuario* u = buscarPorId(idUsuario);
+    if (!u) return false;
+
+    u->nome = nome;
+    u->email = email;
+    u->endereco = endereco;
+    u->perfil = perfil;
+    return true;
+}
