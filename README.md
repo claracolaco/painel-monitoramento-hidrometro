@@ -41,3 +41,8 @@ g++ src\main.cpp `
     -std=c++17 -Wall -o painel.exe
 
 .\painel.exe
+
+---
+
+📚 Projeto desenvolvido na disciplina **Padrões de Projeto** do curso de **Engenharia de Computação**.  
+Autoria: **Maria Clara Colaço da Costa**.
