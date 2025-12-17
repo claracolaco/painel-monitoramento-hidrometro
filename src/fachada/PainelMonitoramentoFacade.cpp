@@ -132,8 +132,6 @@ double PainelMonitoramentoFacade::lerConsumoHidrometro(int idHidrometro) {
     consumoRepository_.registrarLeitura(h->id, h->idUsuario, valor);
     h->ultimoArquivoProcessado = *img;
 
-    consumoRepository_.registrarLeitura(h->id, h->idUsuario, valor);
-
     auto leiturasUsuario = consumoRepository_.listarPorUsuario(h->idUsuario);
     double totalUsuario = 0.0;
     for (const auto& leitura : leiturasUsuario) {
