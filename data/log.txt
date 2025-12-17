@@ -1,0 +1,16 @@
+[2025-12-16 22:50:31] [INFO] Usuario cadastrado: nome=Admin email=admin@painel.com perfil=ADMIN
+[2025-12-16 22:50:31] [INFO] Hidrometro registrado: usuario=1 serie=HID-001 local=Apartamento 101 (SHA 1
+[2025-12-16 22:50:31] [INFO] Hidrometro registrado: usuario=1 serie=HID-002 local=Apartamento 102 (SHA 2)
+[2025-12-16 22:50:31] [INFO] Limite definido: usuario=1 limite=200.000000
+[2025-12-16 22:50:31] [INFO] Diretorio de imagens definido: hidrometro=1 dir=../sha_sophia/Medicoes_sophia
+[2025-12-16 22:50:31] [INFO] Diretorio de imagens definido: hidrometro=2 dir=../sha_anna/medicoes_hidrometros
+[2025-12-16 22:50:31] [INFO] Leitura realizada: hidrometro=1 valor=9945.770000 arquivo=../sha_sophia/Medicoes_sophia\hidrometro_0.bmp
+[2025-12-16 22:50:31] [WARN] ALERTA: usuario=1 limite=200.000000 consumoAtual=9945.770000
+[2025-12-16 22:50:31] [INFO] Leitura realizada: hidrometro=2 valor=8175.560000 arquivo=../sha_anna/medicoes_hidrometros\hidrometro_1.png
+[2025-12-16 22:50:31] [WARN] ALERTA: usuario=1 limite=200.000000 consumoAtual=18121.330000
+[2025-12-16 22:50:33] [INFO] Sem nova imagem: hidrometro=1
+[2025-12-16 22:50:33] [INFO] Sem nova imagem: hidrometro=2
+[2025-12-16 22:50:35] [INFO] Sem nova imagem: hidrometro=1
+[2025-12-16 22:50:35] [INFO] Sem nova imagem: hidrometro=2
+[2025-12-16 22:50:37] [INFO] Hidrometro removido: id=1
+[2025-12-16 22:50:37] [INFO] Usuario removido (cascata): id=1

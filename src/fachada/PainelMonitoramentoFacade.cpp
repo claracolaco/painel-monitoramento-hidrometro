@@ -6,6 +6,8 @@
 #include "../alertas/Alerta.hpp"
 #include <filesystem>
 #include <optional>
+#include "../log/Logger.hpp"
+
 
 static std::optional<std::string> encontrarImagemMaisRecente(const std::string& diretorio) {
     namespace fs = std::filesystem;
@@ -61,12 +63,15 @@ void PainelMonitoramentoFacade::cadastrarUsuario(const std::string& nome,
               << " | nome=" << novo.nome
               << " | email=" << novo.email
               << " | perfil=" << novo.perfil << "\n";
+
+    Logger::instance().info("Usuario cadastrado: nome=" + nome + " email=" + email + " perfil=" + perfil);
 }
 
 void PainelMonitoramentoFacade::removerUsuario(int idUsuario) {
     Usuario* u = usuarioRepository_.buscarPorId(idUsuario);
     if (!u) {
         std::cout << "  [USUARIO] Remocao: id=" << idUsuario << " (nao encontrado)\n";
+        Logger::instance().warn("Tentativa de remover usuario inexistente: id=" + std::to_string(idUsuario));
         return;
     }
 
@@ -96,6 +101,8 @@ void PainelMonitoramentoFacade::removerUsuario(int idUsuario) {
               << " | hidrometrosRemovidos=" << hs.size()
               << " | leiturasRemovidas=" << totalLeiturasRem
               << " | alertasRemovidos=" << alertasRem << "\n";
+
+    Logger::instance().info("Usuario removido (cascata): id=" + std::to_string(idUsuario));
 }
 
 void PainelMonitoramentoFacade::consultarUsuario(int idUsuario) {
@@ -184,6 +191,9 @@ void PainelMonitoramentoFacade::registrarHidrometro(int idUsuario,
               << " | usuario=" << h.idUsuario
               << " | serie=" << h.numeroSerie
               << " | local=" << h.localInstalacao << "\n";
+
+    Logger::instance().info("Hidrometro registrado: usuario=" + std::to_string(idUsuario) +
+                        " serie=" + numeroSerie + " local=" + localInstalacao);
 }
 
 void PainelMonitoramentoFacade::removerHidrometro(int idHidrometro) {
@@ -199,6 +209,8 @@ void PainelMonitoramentoFacade::removerHidrometro(int idHidrometro) {
     std::cout << "  [HIDROMETRO] Remocao: id=" << idHidrometro
               << (removido ? " (removido)" : " (falhou)")
               << " | leiturasRemovidas=" << leiturasRem << "\n";
+    
+    Logger::instance().info("Hidrometro removido: id=" + std::to_string(idHidrometro));
 }
 
 void PainelMonitoramentoFacade::configurarDiretorioImagensHidrometro(int idHidrometro,
@@ -208,9 +220,13 @@ void PainelMonitoramentoFacade::configurarDiretorioImagensHidrometro(int idHidro
     if (ok) {
         std::cout << "  [HIDRÔMETRO] Diretorio de imagens configurado: id=" << idHidrometro
                   << " | dir=" << diretorio << "\n";
+        Logger::instance().info("Diretorio de imagens definido: hidrometro=" + std::to_string(idHidrometro) +
+                        " dir=" + diretorio);
+
     } else {
         std::cout << "  [HIDRÔMETRO] Falha ao configurar diretorio (nao encontrado): id="
                   << idHidrometro << "\n";
+        Logger::instance().warn("Falha ao configurar diretorio: hidrometro=" + std::to_string(idHidrometro));
     }
 }
 
@@ -221,6 +237,7 @@ double PainelMonitoramentoFacade::lerConsumoHidrometro(int idHidrometro) {
     if (!h) {
         std::cout << "  [LEITURA] Hidrometro nao encontrado: id="
                   << idHidrometro << "\n";
+        Logger::instance().warn("Leitura falhou: hidrometro inexistente id=" + std::to_string(idHidrometro));
         return 0.0;
     }
 
@@ -230,12 +247,15 @@ double PainelMonitoramentoFacade::lerConsumoHidrometro(int idHidrometro) {
     if (!img.has_value()) {
         std::cout << "  [LEITURA] Nenhuma imagem disponivel para o hidrometro " << h->id
                 << " (dir=" << h->diretorioImagens << ")\n";
+        Logger::instance().info("Nenhuma imagem disponivel: hidrometro=" + std::to_string(h->id) +
+                        " dir=" + h->diretorioImagens);
         return 0.0;
     }
 
     // evita processar a mesma imagem repetidamente
     if (*img == h->ultimoArquivoProcessado) {
         std::cout << "  [LEITURA] Sem nova imagem para o hidrometro " << h->id << "\n";
+        Logger::instance().info("Sem nova imagem: hidrometro=" + std::to_string(idHidrometro));
         return 0.0;
     }
 
@@ -253,6 +273,10 @@ double PainelMonitoramentoFacade::lerConsumoHidrometro(int idHidrometro) {
               << " (usuario=" << h->idUsuario << "): "
               << "consumoLido=" << valor
               << " | consumoTotalUsuario=" << totalUsuario << "\n";
+    
+    Logger::instance().info("Leitura realizada: hidrometro=" + std::to_string(h->id) +
+                        " valor=" + std::to_string(valor) +
+                        " arquivo=" + *img);
 
     // Verifica limite e gera alerta, se necessário
     auto it = limitesConsumoPorUsuario_.find(h->idUsuario);
@@ -267,6 +291,7 @@ double PainelMonitoramentoFacade::lerConsumoHidrometro(int idHidrometro) {
                 mensagem,
                 limite,
                 totalUsuario
+            
             );
 
             std::cout << "    [ALERTA] id=" << alerta.id
@@ -274,6 +299,11 @@ double PainelMonitoramentoFacade::lerConsumoHidrometro(int idHidrometro) {
                       << " | limite=" << alerta.valorReferencia
                       << " | consumoAtual=" << alerta.consumoAtual
                       << " | mensagem=" << alerta.mensagem << "\n";
+
+            Logger::instance().warn("ALERTA: usuario=" + std::to_string(h->idUsuario) +
+                        " limite=" + std::to_string(limite) +
+                        " consumoAtual=" + std::to_string(totalUsuario));
+
         }
     }
 
@@ -299,6 +329,9 @@ double PainelMonitoramentoFacade::consultarConsumoUsuario(int idUsuario) {
 
 void PainelMonitoramentoFacade::definirLimiteConsumoUsuario(int idUsuario, double limite) {
     limitesConsumoPorUsuario_[idUsuario] = limite;
+
+    Logger::instance().info("Limite definido: usuario=" + std::to_string(idUsuario) +
+                            " limite=" + std::to_string(limite));
 
     std::cout << "  [ALERTA] Limite configurado para o usuario " << idUsuario
               << ": " << limite << " m3\n";
