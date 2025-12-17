@@ -1,7 +1,10 @@
-#include <iostream>
+/*#include <iostream>
 #include "fachada/PainelMonitoramentoFacade.hpp"
 #include <thread>
 #include <chrono>
+#include "notificacao/ConsoleAlertaObserver.hpp"
+#include "notificacao/EmailAlertaObserver.hpp"
+
 
 int main() {
     std::cout << "=============================================\n";
@@ -9,6 +12,13 @@ int main() {
     std::cout << "=============================================\n\n";
 
     PainelMonitoramentoFacade painel;
+
+    ConsoleAlertaObserver obsConsole;
+    EmailAlertaObserver obsEmail;
+
+    painel.adicionarObserver(&obsConsole);
+    painel.adicionarObserver(&obsEmail);
+
 
     std::cout << "[ETAPA 1] Cadastro de usuario administrador\n";
     painel.cadastrarUsuario("Admin",
@@ -47,19 +57,42 @@ for (int i = 1; i <= 3; i++) {
     double totalUsuario = painel.consultarConsumoUsuario(1);
     std::cout << "  Consumo total do usuario 1: " << totalUsuario << " m3\n";
 
-    std::cout << "\n[ETAPA 6] Teste de remocao em cascata\n";
+    std::cout << "\n[ETAPA 6] Monitoramento periodico (Template Method)\n";
+    painel.executarMonitoramentoPeriodico(3, 2000);
+
+    std::cout << "\n[ETAPA 7] Teste de remocao em cascata\n";
     painel.removerHidrometro(1);
     painel.consultarConsumoHidrometro(1);
 
     painel.removerUsuario(1);
     painel.consultarConsumoUsuario(1);
 
-    std::cout << "\n[ETAPA 7] Consulta de logs\n";
+    std::cout << "\n[ETAPA 8] Consulta de logs\n";
     painel.consultarLogs(15);
 
-    std::cout << "\n[ETAPA 8] Monitoramento periodico (Template Method)\n";
+    std::cout << "\n[ETAPA 9] Monitoramento periodico (Template Method)\n";
     painel.executarMonitoramentoPeriodico(3, 2000);
 
+
     std::cout << "\n=== Fim da demonstracao do painel ===\n";
+    return 0;
+}*/
+
+#include "fachada/PainelMonitoramentoFacade.hpp"
+#include "cli/PainelCLI.hpp"
+#include "notificacao/ConsoleAlertaObserver.hpp"
+#include "notificacao/EmailAlertaObserver.hpp"
+
+int main() {
+    PainelMonitoramentoFacade painel;
+
+    // Observers (Observer pattern)
+    ConsoleAlertaObserver obsConsole;
+    EmailAlertaObserver obsEmail;
+    painel.adicionarObserver(&obsConsole);
+    painel.adicionarObserver(&obsEmail);
+
+    PainelCLI cli(painel);
+    cli.executar();
     return 0;
 }
