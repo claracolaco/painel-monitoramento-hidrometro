@@ -54,6 +54,12 @@ for (int i = 1; i <= 3; i++) {
     painel.removerUsuario(1);
     painel.consultarConsumoUsuario(1);
 
+    std::cout << "\n[ETAPA 7] Consulta de logs\n";
+    painel.consultarLogs(15);
+
+    std::cout << "\n[ETAPA 8] Monitoramento periodico (Template Method)\n";
+    painel.executarMonitoramentoPeriodico(3, 2000);
+
     std::cout << "\n=== Fim da demonstracao do painel ===\n";
     return 0;
 }

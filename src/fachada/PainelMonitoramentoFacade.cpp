@@ -7,6 +7,9 @@
 #include <filesystem>
 #include <optional>
 #include "../log/Logger.hpp"
+#include <fstream>
+#include <deque>
+#include "../monitoramento/MonitoramentoPainel.hpp"
 
 
 static std::optional<std::string> encontrarImagemMaisRecente(const std::string& diretorio) {
@@ -335,4 +338,52 @@ void PainelMonitoramentoFacade::definirLimiteConsumoUsuario(int idUsuario, doubl
 
     std::cout << "  [ALERTA] Limite configurado para o usuario " << idUsuario
               << ": " << limite << " m3\n";
+}
+
+
+
+void PainelMonitoramentoFacade::consultarLogs(int ultimasN) {
+    std::ifstream in("data/log.txt");
+    if (!in.is_open()) {
+        std::cout << "  [LOG] Nao foi possivel abrir data/log.txt\n";
+        Logger::instance().warn("Consulta de logs falhou: arquivo data/log.txt nao encontrado");
+        return;
+    }
+
+    std::deque<std::string> ultimas;
+    std::string linha;
+
+    while (std::getline(in, linha)) {
+        ultimas.push_back(linha);
+        if ((int)ultimas.size() > ultimasN) ultimas.pop_front();
+    }
+
+    std::cout << "  [LOG] Ultimas " << ultimas.size() << " linhas:\n";
+    for (const auto& l : ultimas) {
+        std::cout << "    " << l << "\n";
+    }
+
+    Logger::instance().info("Logs consultados: ultimasN=" + std::to_string(ultimasN));
+}
+
+
+void PainelMonitoramentoFacade::executarMonitoramentoPeriodico(int ciclos, int intervaloMs) {
+    auto hs = hidrometroRepository_.listarTodos();
+    std::vector<int> ids;
+    ids.reserve(hs.size());
+
+    for (const auto& h : hs) ids.push_back(h.id);
+
+    std::cout << "\n[MONITORAMENTO] Iniciando: ciclos=" << ciclos
+              << " intervaloMs=" << intervaloMs
+              << " hidrometros=" << ids.size() << "\n";
+
+    Logger::instance().info("Monitoramento iniciado: ciclos=" + std::to_string(ciclos) +
+                            " intervaloMs=" + std::to_string(intervaloMs) +
+                            " hidrometros=" + std::to_string(ids.size()));
+
+    MonitoramentoPainel m(*this, ids);
+    m.executar(ciclos, intervaloMs);
+
+    Logger::instance().info("Monitoramento finalizado");
 }

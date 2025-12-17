@@ -40,7 +40,7 @@ public:
     void consultarUsuario(int idUsuario);
 
 
-    
+
     void atualizarUsuario(int idUsuario,
                         const std::string& nome,
                         const std::string& email,
@@ -50,6 +50,11 @@ public:
     void listarHidrometrosUsuario(int idUsuario);
 
     double consultarConsumoHidrometro(int idHidrometro);
+
+    void consultarLogs(int ultimasN = 30);
+
+    void executarMonitoramentoPeriodico(int ciclos, int intervaloMs);
+
 
 private:
     UsuarioRepository usuarioRepository_;
