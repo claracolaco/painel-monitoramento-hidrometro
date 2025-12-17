@@ -10,3 +10,7 @@ painel.exe
 bin/
 build/
 dist/
+out/
+
+data/log.txt
+data/*.log
