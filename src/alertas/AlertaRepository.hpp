@@ -15,6 +15,8 @@ public:
     std::vector<Alerta> listarPorUsuario(int idUsuario) const;
     std::vector<Alerta> listarTodos() const;
 
+    int removerPorUsuario(int idUsuario);
+
 private:
     std::vector<Alerta> alertas_;
     int proximoId_;

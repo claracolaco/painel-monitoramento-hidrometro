@@ -47,12 +47,13 @@ for (int i = 1; i <= 3; i++) {
     double totalUsuario = painel.consultarConsumoUsuario(1);
     std::cout << "  Consumo total do usuario 1: " << totalUsuario << " m3\n";
 
+    std::cout << "\n[ETAPA 6] Teste de remocao em cascata\n";
+    painel.removerHidrometro(1);
+    painel.consultarConsumoHidrometro(1);
+
+    painel.removerUsuario(1);
+    painel.consultarConsumoUsuario(1);
+
     std::cout << "\n=== Fim da demonstracao do painel ===\n";
     return 0;
-
-    std::cout << "\n[ETAPA 6] Consultas\n";
-    painel.consultarUsuario(1);
-    painel.consultarConsumoHidrometro(1);
-    painel.consultarConsumoHidrometro(2);
-
 }

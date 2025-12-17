@@ -1,4 +1,5 @@
 #include "AlertaRepository.hpp"
+#include <algorithm>
 
 AlertaRepository::AlertaRepository()
     : proximoId_(1) {}
@@ -25,4 +26,14 @@ std::vector<Alerta> AlertaRepository::listarPorUsuario(int idUsuario) const {
 
 std::vector<Alerta> AlertaRepository::listarTodos() const {
     return alertas_;
+}
+
+int AlertaRepository::removerPorUsuario(int idUsuario) {
+    auto antes = alertas_.size();
+    alertas_.erase(
+        std::remove_if(alertas_.begin(), alertas_.end(),
+            [&](const Alerta& a){ return a.idUsuario == idUsuario; }),
+        alertas_.end()
+    );
+    return static_cast<int>(antes - alertas_.size());
 }

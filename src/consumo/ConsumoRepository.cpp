@@ -1,4 +1,6 @@
 #include "ConsumoRepository.hpp"
+#include <algorithm>
+
 
 ConsumoRepository::ConsumoRepository()
     : proximoId_(1) {}
@@ -30,4 +32,24 @@ std::vector<LeituraConsumo> ConsumoRepository::listarPorHidrometro(int idHidrome
         }
     }
     return resultado;
+}
+
+int ConsumoRepository::removerPorUsuario(int idUsuario) {
+    auto antes = leituras_.size();
+    leituras_.erase(
+        std::remove_if(leituras_.begin(), leituras_.end(),
+            [&](const LeituraConsumo& l){ return l.idUsuario == idUsuario; }),
+        leituras_.end()
+    );
+    return static_cast<int>(antes - leituras_.size());
+}
+
+int ConsumoRepository::removerPorHidrometro(int idHidrometro) {
+    auto antes = leituras_.size();
+    leituras_.erase(
+        std::remove_if(leituras_.begin(), leituras_.end(),
+            [&](const LeituraConsumo& l){ return l.idHidrometro == idHidrometro; }),
+        leituras_.end()
+    );
+    return static_cast<int>(antes - leituras_.size());
 }

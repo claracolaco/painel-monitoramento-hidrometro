@@ -14,6 +14,10 @@ public:
 
     std::vector<LeituraConsumo> listarPorHidrometro(int idHidrometro) const;
 
+    int removerPorUsuario(int idUsuario);
+    int removerPorHidrometro(int idHidrometro);
+
+
 private:
     std::vector<LeituraConsumo> leituras_;
     int proximoId_;

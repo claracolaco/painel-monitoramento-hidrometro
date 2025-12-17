@@ -64,10 +64,38 @@ void PainelMonitoramentoFacade::cadastrarUsuario(const std::string& nome,
 }
 
 void PainelMonitoramentoFacade::removerUsuario(int idUsuario) {
+    Usuario* u = usuarioRepository_.buscarPorId(idUsuario);
+    if (!u) {
+        std::cout << "  [USUARIO] Remocao: id=" << idUsuario << " (nao encontrado)\n";
+        return;
+    }
+
+    // 1) Remover hidrômetros do usuário (e leituras de cada hidrômetro)
+    auto hs = hidrometroRepository_.listarPorUsuario(idUsuario);
+    int totalLeiturasRem = 0;
+
+    for (const auto& h : hs) {
+        totalLeiturasRem += consumoRepository_.removerPorHidrometro(h.id);
+        hidrometroRepository_.remover(h.id);
+    }
+
+    // 2) Remover possíveis leituras órfãs por usuário (segurança)
+    totalLeiturasRem += consumoRepository_.removerPorUsuario(idUsuario);
+
+    // 3) Remover alertas
+    int alertasRem = alertaRepository_.removerPorUsuario(idUsuario);
+
+    // 4) Remover limite configurado
+    limitesConsumoPorUsuario_.erase(idUsuario);
+
+    // 5) Remover usuário
     bool removido = usuarioRepository_.remover(idUsuario);
 
     std::cout << "  [USUARIO] Remocao: id=" << idUsuario
-              << (removido ? " (removido)\n" : " (nao encontrado)\n");
+              << (removido ? " (removido)" : " (falhou)")
+              << " | hidrometrosRemovidos=" << hs.size()
+              << " | leiturasRemovidas=" << totalLeiturasRem
+              << " | alertasRemovidos=" << alertasRem << "\n";
 }
 
 void PainelMonitoramentoFacade::consultarUsuario(int idUsuario) {
@@ -159,10 +187,18 @@ void PainelMonitoramentoFacade::registrarHidrometro(int idUsuario,
 }
 
 void PainelMonitoramentoFacade::removerHidrometro(int idHidrometro) {
+    Hidrometro* h = hidrometroRepository_.buscarPorId(idHidrometro);
+    if (!h) {
+        std::cout << "  [HIDROMETRO] Remocao: id=" << idHidrometro << " (nao encontrado)\n";
+        return;
+    }
+
+    int leiturasRem = consumoRepository_.removerPorHidrometro(idHidrometro);
     bool removido = hidrometroRepository_.remover(idHidrometro);
 
     std::cout << "  [HIDROMETRO] Remocao: id=" << idHidrometro
-              << (removido ? " (removido)\n" : " (nao encontrado)\n");
+              << (removido ? " (removido)" : " (falhou)")
+              << " | leiturasRemovidas=" << leiturasRem << "\n";
 }
 
 void PainelMonitoramentoFacade::configurarDiretorioImagensHidrometro(int idHidrometro,
